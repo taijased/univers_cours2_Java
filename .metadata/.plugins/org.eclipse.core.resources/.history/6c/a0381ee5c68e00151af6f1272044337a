@@ -1,0 +1,304 @@
+
+/*package fractals;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JPanel;
+
+public class Fractal {
+
+	int M = 300;
+	public Complex c;
+	JPanel panel;
+	boolean boolka;
+	Graphics g;
+	Convert conv;
+	int formula;
+	
+	public Fractal(JPanel p,Graphics gg,Convert convert,int form){
+		panel = p;
+	    conv = convert;
+		g = gg;
+		formula = form;
+		
+	}
+	
+	public Color getColor(int i){
+		
+		return new Color((2*i)%255,(200%i)%255,(10*i)%255);	
+
+	}
+	public void Mandelbrod(){
+			for(int i = 0; i < panel.getWidth();i++){
+				for(int j =0; j < panel.getHeight();j++){
+					Color color;
+					
+					Complex c = new Complex(conv.xToDecart(i), conv.yToDecart(j));
+		
+					Complex z = new Complex();
+					int k = 0;
+					while(k < M && z.abs() < 2){
+						
+						
+						switch(formula){
+							case 1: z = z.mult(z).plus(c); break;
+							case 2: z = z.mult(z.mult(z)).plus(c); break;
+							case 3: z = z.mult(z).plus(z).plus(c); break;
+							case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+						
+							default : break;
+						}
+					
+						
+						
+						k++;
+					}	
+
+					if(k == M) {
+						color = Color.black;
+					}else {
+						
+						color = getColor(k);
+					}
+					
+					g.setColor(color); 
+					g.fillRect(i, j, 1, 1);
+					
+					
+					
+					
+				}
+			}
+			
+			
+	}
+	public void threadMandelbrod(){
+		
+		Graphics g1;
+		Graphics g2;
+		Graphics g3;
+		Graphics g4;
+		
+		Thread r1 = new Thread(){
+
+			public void run(){
+				for(int i = 0; i < panel.getWidth();i++){
+					for(int j =0; j < panel.getHeight();j++){
+						
+						if(i%2 == 0 && j%2 == 0){
+							Color color;			
+							Complex c = new Complex(conv.xToDecart(i), conv.yToDecart(j));			
+							Complex z = new Complex();
+							int k = 0;
+							while(k < M && z.abs() < 2){
+								
+								
+								switch(formula){
+									case 1: z = z.mult(z).plus(c); break;
+									case 2: z = z.mult(z.mult(z)).plus(c); break;
+									case 3: z = z.mult(z).plus(z).plus(c); break;
+									case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+								
+									default : break;
+								}
+											
+								k++;
+							}	
+							
+							color =(k == M)?Color.black:getColor(k);				
+
+							synchronized(g){
+								g.setColor(color); 
+								g.fillRect(i, j, 1, 1);
+							}
+						}
+						
+					}
+				}
+			}
+
+		};
+		Thread r2 = new Thread(){
+			public void run(){
+				for(int i = 0; i < panel.getWidth();i++){
+					for(int j =0; j < panel.getHeight();j++){
+						if(i%2 == 0 && j%2 !=0){
+							Color color;			
+							Complex c = new Complex(conv.xToDecart(i), conv.yToDecart(j));			
+							Complex z = new Complex();
+							int k = 0;
+							while(k < M && z.abs() < 2){
+								
+								
+								switch(formula){
+									case 1: z = z.mult(z).plus(c); break;
+									case 2: z = z.mult(z.mult(z)).plus(c); break;
+									case 3: z = z.mult(z).plus(z).plus(c); break;
+									case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+								
+									default : break;
+								}
+											
+								k++;
+							}	
+	
+							color =(k == M)?Color.black:getColor(k);				
+							synchronized(g){
+								g.setColor(color); 
+								g.fillRect(i, j, 1, 1);
+							}
+						
+						}
+						
+					}
+				}
+			}
+
+		};
+		Thread r3 = new Thread(){
+			public void run(){
+				for(int i = 0; i <panel.getWidth();i++){
+					for(int j =0; j < panel.getHeight();j++){
+						if(i%2 != 0 && j%2 == 0){
+							Color color;			
+							Complex c = new Complex(conv.xToDecart(i), conv.yToDecart(j));			
+							Complex z = new Complex();
+							int k = 0;
+							while(k < M && z.abs() < 2){
+								
+								
+								switch(formula){
+									case 1: z = z.mult(z).plus(c); break;
+									case 2: z = z.mult(z.mult(z)).plus(c); break;
+									case 3: z = z.mult(z).plus(z).plus(c); break;
+									case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+								
+									default : break;
+								}
+											
+								k++;
+							}	
+	
+							color =(k == M)?Color.black:getColor(k);				
+							
+								
+							synchronized(g){
+								g.setColor(color); 
+								g.fillRect(i, j, 1, 1);
+							}
+						}
+						
+					}
+				}
+			}
+
+		};
+ 
+		Thread r4 = new Thread(){
+			public void run(){
+				for(int i = 0; i < panel.getWidth();i++){
+					for(int j =0; j < panel.getHeight();j++){
+						if(i%2 !=0 && j%2 !=0){
+							Color color;			
+							Complex c = new Complex(conv.xToDecart(i), conv.yToDecart(j));			
+							Complex z = new Complex();
+							int k = 0;
+							while(k < M && z.abs() < 2){
+								switch(formula){
+									case 1: z = z.mult(z).plus(c); break;
+									case 2: z = z.mult(z.mult(z)).plus(c); break;
+									case 3: z = z.mult(z).plus(z).plus(c); break;
+									case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+								
+									default : break;
+								}
+											
+								k++;
+
+							
+							}	
+	
+							color =(k == M)?Color.black:getColor(k);				
+							
+							synchronized(g){
+								g.setColor(color); 
+								g.fillRect(i, j, 1, 1);
+							}
+						}
+						
+						
+						
+					}
+				}
+			}
+
+		};
+		try{
+			r1.start();
+			r2.start();		
+			r3.start();
+			r4.start();
+		
+		
+			r1.join();
+			r2.join();
+			r3.join();
+			r4.join();
+
+			
+
+			
+		}catch(Exception ex){System.out.println(ex.getMessage());}
+
+	}
+	
+
+	public void Julia(int cx,int cy){
+		
+		Complex c = new Complex(conv.xToDecart(cx), conv.yToDecart(cy));
+		
+		
+		for(int i = 0; i < panel.getWidth();i++){
+			for(int j =0; j < panel.getHeight();j++){		
+	
+				Complex z = new Complex();
+				
+				z.re = conv.xToDecart(i);
+				z.im = conv.yToDecart(j);
+				
+				int k = 0;
+				while(k < M && Math.sqrt(z.abs()) < 4){
+					
+					
+					switch(formula){
+					case 1: z = z.mult(z).plus(c); break;
+					case 2: z = z.mult(z.mult(z)).plus(c); break;
+					case 3: z = z.mult(z).plus(z).plus(c); break;
+					case 4: z = z.mult(z.mult(z)).plus(z).plus(c); break;
+				
+					default : break;
+				}
+					
+					
+					k++;
+				}	
+
+				Color color;
+				if(k == M) {
+					color = Color.black;
+				}else {
+					
+					color = getColor(k);
+				}
+				g.setColor(color); 
+				g.fillRect(i, j, 1, 1);
+		
+			}
+		}
+		
+	}
+
+}
+	*/

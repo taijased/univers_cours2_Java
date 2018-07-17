@@ -1,0 +1,61 @@
+package Polinom;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+
+public class PaintLagrange extends Lagrange{
+
+
+public ArrayList<double[]> ArrList = new ArrayList<double[]>();
+   public void AddNodes (double x, double y){
+	   double [] tmp=new double [2];
+	   tmp[0]=x;
+	   tmp[1]=y;
+	   for(int i=0; i<ArrList.size(); i++){
+		   if(x==ArrList.get(i)[0]){
+			   ArrList.remove(i);
+			   ArrList.add(i,tmp);
+			   return;
+		   }
+		   if(x<ArrList.get(i)[0]){
+			   ArrList.add(i,tmp);
+			   return;
+		   }	   
+	   }
+	   if(!ArrList.contains(tmp))ArrList.add(tmp);
+   }
+   
+	void ShowNodes(Graphics g,double xmin,double xmax,double ymin,double ymax,int W,int H){
+		g.setColor(Color.BLACK);
+		Converter con = new Converter(xmin,xmax,ymin,ymax,W,H);
+		for(int i=0;i<ArrList.size();i++){
+			int px = con.XtoPx(ArrList.get(i)[0]);
+			int py = con.YtoPy(ArrList.get(i)[1]);
+			g.fillOval(px-4, py-4, 8, 8);
+		}
+	}
+	
+	void ShowLagrange(Graphics g,double xmin,double xmax,double ymin,double ymax,int W,int H){
+		if(ArrList.size() < 2) return;
+		Converter con = new Converter(xmin,xmax,ymin,ymax,W,H);
+		int min,max;
+		min = con.XtoPx(ArrList.get(0)[0]);			
+		max = con.XtoPx(ArrList.get(ArrList.size()-1)[0]);
+		for(int i=min;i<max;i++){			
+			int y1 = con.YtoPy(ZnT(con.PxtoX(i)));
+			int y2 = con.YtoPy(ZnT(con.PxtoX(i+1)));
+			g.setColor(Color.RED);
+			g.drawLine(i, y1, i+1, y2);
+		}
+	}
+
+	 public double ZnT(double x) {
+	        double zn=this.coef[0];         
+	        for (int i = 1; i < this.coef.length; i++){ 
+	        	double t = Math.pow(x,i);
+				zn=zn+this.coef[i]*t ;
+	        }
+	        return zn;
+	    }
+}

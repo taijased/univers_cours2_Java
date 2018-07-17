@@ -1,0 +1,179 @@
+package fractal1;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
+import converter.Converter;
+
+public class Mandelbrot implements Runnable
+{
+	protected int  w, h;
+	protected  double minx,miny,maxx,maxy;
+	protected converter.Converter c;
+	protected Graphics g;
+	int part;
+	public static int cnt=0;
+	private int prcnt;
+	public Mandelbrot(Graphics g,int w, int h, double minx, double maxx, double miny, double maxy,int i)
+	{
+		prcnt=cnt;
+		this.w = w;
+		this.h = h;
+		this.minx = minx;
+		this.maxx = maxx;
+		this.miny = miny;
+		this.maxy = maxy;
+		this.part=i;
+		c = new converter.Converter(w, h, minx, maxx, miny, maxy);
+		this.g=g;
+		
+	}
+	
+	public void paint() 
+	{
+		int min=0;
+		int max=w;
+		switch(part){
+		case 1:
+		{
+			max=w/4;
+			break;
+		}
+		case 2:
+		{
+			min=w/4;
+			max=w/2;
+			break;
+		}
+		case 3:
+		{
+			min=w/2;
+			max=3*w/4;
+			break;
+		}
+		case 4:
+		{
+			min=3*w/4;
+			break;
+		}
+		}
+		BufferedImage im=new BufferedImage(w/4+1,h,BufferedImage.TYPE_INT_RGB);
+		Graphics g=im.createGraphics();
+		minx=c.xScr2Dec(min);
+		maxx=c.xScr2Dec(max);
+		c=new Converter(w/4,h,minx,maxx,miny,maxy);
+		
+		//g.setColor(Color.BLACK);
+		//g.drawLine(0, 0, 200, 200);
+		//точки принадлежащие множеству одним  цветом, не принадлежащие другим
+		//цикл пробегающий по всем точкам(пикселям) с на панели
+		//2 цикла один по ширине другой по высоте
+		for(int i = 0;cnt==prcnt && i <=w/4; i++)
+		{
+			for (int j = 0;cnt==prcnt && j < h; j++)
+			{
+				int q=isInSet(i,j);
+				Color t = new Color (q+50,q+1,q+1);
+				g.setColor(t);
+			
+				//тогда отображаем если тру, линия в один пиксель
+				g.drawLine(i, j, i, j);	
+			}
+		}
+		
+		if(cnt==prcnt){
+		synchronized(this.g){
+			switch(part){
+			case 2:{
+				this.g.drawImage(im,w/4+1,0,null);
+				break;
+			}
+			case 3:{
+			this.g.drawImage(im,w/2+1,0,null);
+			break;
+			}
+		case 4:{
+		this.g.drawImage(im,3*w/4+1,0,null);
+		break;
+	}
+		case 1:
+			default:{
+		
+					this.g.drawImage(im,0,0,null);
+			break;
+		}
+			}
+		}
+		}	//проверяем точку с координатами i и j чтобы они принадлежали множеству, тогда черная точка, иначе белой
+			//	int q=isInSet(i,j); //функция проверка одна точка принадл мн или нет
+				//Color t = new Color (q+50,q+1,q+1);
+					//g.setColor(t);
+				
+					//тогда отображаем если тру, линия в один пиксель
+				//	g.drawLine(i, j, i, j);
+				}
+			
+	public void prectt(int x1,int y1,int x3,int y3){
+		int minx11=Math.min(x1,x3);
+		int miny11=Math.min(y1,y3);
+		int maxx11=Math.max(x1,x3);
+		int maxy11=Math.max(y1,y3);
+		
+		for(int i =minx11 ;i <= maxx11; i++)
+		{PainOneDot(g,i,miny11);
+		PainOneDot(g,i,maxy11);	
+		}
+			
+	for (int j =miny11;j <=maxy11; j++)
+	{PainOneDot(g,minx11,j);
+	PainOneDot(g,maxx11,j);	
+	}
+	}
+	public void run(){
+		
+	paint();
+	
+	}
+	public void PainOneDot(Graphics g,int i,int j){
+		int q=isInSet(i,j);
+		Color t = new Color (q+50,q+1,q+1);
+		//Color t = Color.RED;
+		g.setColor(t);
+	
+		//тогда отображаем если тру, линия в один пиксель
+		g.drawLine(i, j, i, j);	
+	}
+		
+	
+	public int isInSet(int i, int j) 
+	{
+		return isInSet(c.xScr2Dec(i),c.yScr2Dec(j));	
+	}
+	public int isInSet(double re, double im) 
+	{
+		double zx = 0;
+		double zy = 0;
+		//цикл кот проверяет 200 раз
+		for (int n = 0; n < 200; n++)
+		{
+			//new Color(n,n,2*n);
+			//вещественная часть (x+iy)^2
+			double zx2 = zx*zx - zy*zy + re; //re- вещ часть С
+			double zy2 = 2*zx*zy + im;
+			//условие, прерываем если больше 4х, выходим
+			if (zx2*zx2 + zy2*zy2 > 4) return n;
+			zx = zx2;
+			zy = zy2;
+		}
+		return 200; //если что то прервется внутри цикла то возвр false, если нет то true
+	}
+
+}
+
+	
+	
+
+
+

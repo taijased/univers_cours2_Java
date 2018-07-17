@@ -1,0 +1,12 @@
+package ru.kgrf.painting;
+
+import javax.swing.JForm;
+
+public class MainFrame extends JForm {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

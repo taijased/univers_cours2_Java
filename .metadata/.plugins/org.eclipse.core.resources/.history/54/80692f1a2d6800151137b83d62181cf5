@@ -1,0 +1,50 @@
+package ru.kgrf.painting;
+
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class MainFrame extends JFrame {
+
+	private JPanel mainPanel; 
+	private JPanel controlPanel;
+	private JButton btnPaint;
+	private JButton btnExit;
+	
+	public MainFrame(){
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(600,400);
+		mainPanel=new JPanel();
+		controlPanel=new JPanel();
+		GroupLayout gl1=new GroupLayout(getContentPane());
+		setLayout(gl1);
+		gl1.setHorizontalGroup(
+				gl1.createParallelGroup(Alignment.LEADING)
+					.addGap(8)
+					.addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+					.addGap(8)
+					.addComponent(controlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,GroupLayout.PREFERRED_SIZE)
+					.addGap(8)
+					//	.addContainerGap()
+						
+				);
+	gl1.setVerticalGroup(
+			gl1.createSequentialGroup()
+			.addContainerGap()
+			.addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+			.addGap(8)
+			.addComponent(controlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,GroupLayout.PREFERRED_SIZE)
+			.addContainerGap()
+			);
+	
+	
+	}
+	
+	public static void main(String[] args) {
+		MainFrame frm=new MainFrame();
+
+	}
+
+}

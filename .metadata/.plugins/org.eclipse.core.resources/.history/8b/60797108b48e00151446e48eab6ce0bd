@@ -1,0 +1,60 @@
+package Polinom;
+public class Converter { 
+	protected double xmin,xmax,ymin,ymax; 
+	protected int W,H; 
+	public Converter(){ 
+		xmin = -5.1; 
+		xmax = 5.1; 
+		ymin = -5.5; 
+		ymax = 5.5; 
+		W=600; 
+		H=600; 
+	} 
+
+	public Converter(double xmin,double xmax,double ymin, double ymax,int W,int H){ 
+		if(xmin>=xmax) xmin = xmax-1; 
+		if(ymin>=ymax) ymin = ymax-1; 
+		if(W<=0) W = 600; 
+		if(H<=0) H = 600; 
+		this.xmin=xmin; 
+		this.xmax=xmax; 
+		this.ymin=ymin; 
+		this.ymax=ymax; 
+		this.W=W; 
+		this.H=H; 
+} 
+
+	public int XtoPx(double x){ 
+		if (x<xmin){ 
+			x=xmin-1; 
+		} 
+		if(x>xmax){ 
+			x=xmax+1; 
+		} 
+		double rez = (x-xmin)*W/(xmax-xmin); 
+		return (int)rez; 
+	} 
+
+	public int YtoPy(double y){ 
+		if (y<ymin){ 
+			y=ymin-1; 
+		} 
+		if(y>ymax){ 
+			y=ymax+1; 
+		} 
+		double rez = (ymax-y)*H/(ymax-ymin); 
+		return (int)rez; 
+	} 
+
+	public double PxtoX(int X){ 
+		if(X<0) X=-1; 
+		if(X>W) X=W+1; 
+		return xmin+X*(double)(xmax-xmin)/W; 
+	} 
+
+	public double PytoY(double y2){ 
+		if(y2<0) y2=-1; 
+		if(y2>H) y2=H+1; 
+		return ymax-y2*(double)(ymax-ymin)/H; 
+	} 
+}

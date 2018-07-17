@@ -1,0 +1,110 @@
+package Polinom;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+public class Lagrange extends Polinom {
+	
+	 public Lagrange (double koefs, double d) {
+	       super (koefs,d);
+	    }
+   Lagrange(){
+	   super (0,0);
+	   ArrList= new ArrayList<double[]>();
+	 }
+   public ArrayList<double[]> ArrList;//список одномерных массивов
+   public void AddNodes (double x, double y){
+	   double [] tmp=new double [2];
+	   tmp[0]=x;
+	   tmp[1]=y;
+	   for(int i=0; i<ArrList.size(); i++){
+		   if(x==ArrList.get(i)[0]){
+			   ArrList.remove(i);
+			   ArrList.add(i,tmp);
+			   return;
+		   }
+		   if(x<ArrList.get(i)[0]){
+			   ArrList.add(i,tmp);
+			   return;
+		   }
+		   
+	   }
+	   if(!ArrList.contains(tmp))ArrList.add(tmp);
+   }
+   
+   void  GetLagrange(){
+	   double [][]Uzly= new double [2][ArrList.size()];//список узлов берем и перезаписываем все узлы в двумерный массиив, чтобы использовать метод гетлагранж
+   for (int i =0; i<ArrList.size();i++){
+	   Uzly[0][i]=ArrList.get(i)[0];
+			   Uzly[1][i]=ArrList.get(i)[1];
+			   
+   }
+   Lagrange TMP= new Lagrange (Uzly);
+   coef=new double[TMP.coef.length];
+   for(int i=0;i<(TMP.coef.length);i++){
+	   coef[i]=TMP.coef[i];
+   }
+   }
+   
+	Lagrange(double[][]nodes){
+		super(0,0);
+		int n = nodes[0].length;//количество узлов
+	     Polinom res = new Polinom(0,0);
+	     
+	    for(int i=0;i<n;i++){
+	    	Polinom l = new Polinom(1,0);//полином, состоящий из единицы
+	    	for(int j=0;j<n;j++){
+	    		if(j!=i){
+	    			Polinom tmp = new Polinom(-1*nodes[0][j],0);
+	    			Polinom tmp2=new Polinom(1,1);// это х
+	    		tmp=tmp.sum(tmp2); 
+	    		double r = nodes[0][i]-nodes[0][j];// промежуточное число(один из знаменателей в лагранже)
+	    		tmp=tmp.umnogCh(1/r);
+	    		l=l.umnog(tmp);
+	    		}
+	    	}// Получили l 
+	    	l=l.umnogCh(nodes[1][i]);
+	    	res=res.sum(l);
+	    	
+	    		
+	    	}
+	    coef = new double[res.coef.length];// длина массива res
+	    pow=res.coef.length-1;
+	    for(int i=0;i<res.coef.length;i++){
+	    	coef[i]=res.coef[i];//копируем содержимое res в coef
+	    }
+	    System.out.println("Полином Лагранжа:");
+	    System.out.println(this);
+	    
+	   
+	}
+	void ShowNodes(Graphics g,double xmin,double xmax,double ymin,double ymax,int W,int H)
+	{g.setColor(Color.green);
+		Converter con = new Converter(xmin,xmax,ymin,ymax,W,H);
+		for(int i=0;i<ArrList.size();i++){
+			int px = con.XtoPx(ArrList.get(i)[0]);
+			int py = con.YtoPy(ArrList.get(i)[1]);
+			g.fillOval(px-4, py-4, 8, 8);
+		}
+	}
+	void ShowLagrange(Graphics g,double xmin,double xmax,double ymin,double ymax,int W,int H){
+		if(ArrList.size()<2) return;
+		Converter con = new Converter(xmin,xmax,ymin,ymax,W,H);
+		int min,max;
+		min = con.XtoPx(ArrList.get(0)[0]);			
+			max = con.XtoPx(ArrList.get(ArrList.size()-1)[0]);
+		
+		
+		for(int i=min;i<max;i++){			
+			double r=ZnT(con.PxtoX(i));
+			int y1 = con.YtoPy(ZnT(con.PxtoX(i)));
+			r=ZnT(con.PxtoX(i+1));
+			int y2 = con.YtoPy(ZnT(con.PxtoX(i+1)));
+			g.setColor(Color.green);
+			g.drawLine(i, y1, i+1, y2);
+		}
+	}
+	
+	
+}
+
